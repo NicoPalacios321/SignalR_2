@@ -18,10 +18,10 @@ export default function Home() {
 
   function connectToHub() {
     const newHubConnection = new HubConnectionBuilder()
-                              .withUrl(hubUrl, { accessTokenFactory: () => sessionStorage.getItem("token")! })
-                              .withAutomaticReconnect()
-                              .configureLogging(LogLevel.Information)
-                              .build();
+      .withUrl(hubUrl, { accessTokenFactory: () => sessionStorage.getItem("token")! })
+      .withAutomaticReconnect()
+      .configureLogging(LogLevel.Information)
+      .build();
 
     newHubConnection
       .start()

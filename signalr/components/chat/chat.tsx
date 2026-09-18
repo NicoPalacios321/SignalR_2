@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 // On doit commencer par ajouter signalr dans les node_modules: npm install @microsoft/signalr
 // Ensuite on inclut la librairie
 import { HubConnection } from '@microsoft/signalr'
@@ -35,14 +35,25 @@ export default function ChatComponent({ hubConnection }: ChatComponentProps) {
     });
 
     // TODO: Écouter le message pour mettre à jour la liste de channels
+    hubConnection.on('ChannelList',(data:Channel[]) => {
+      setChannelsList(data)
+      console.log(channelsList)
+    })
 
     // TODO: Écouter le message pour quitter un channel (lorsque le channel est effacé)
+    hubConnection.on('LeaveChannel',() => {
+      setSelectedChannel(null)
+      setMessages([])
+    })
+
 
     return () => {
       hubConnection.off('UsersList');
       hubConnection.off('NewMessage');
+      hubConnection.off('LeaveChannel');
+      hubConnection.off('ChannelList');
     };
-  }, [hubConnection]);
+  }, [hubConnection] );
 
   function joinChannel(channel: Channel) {
     if (!hubConnection) return;
@@ -72,11 +83,15 @@ export default function ChatComponent({ hubConnection }: ChatComponentProps) {
   function createChannel(e: React.FormEvent) {
     e.preventDefault();
     // TODO: Ajouter un invoke pour créer un canal
-    setNewChannelName('');
+    if(!hubConnection || newChannelName.trim() === "") return  
+      hubConnection.invoke('CreateChannel',newChannelName)
+      setNewChannelName('')
   }
 
   function deleteChannel(channel: Channel) {
     // TODO: Ajouter un invoke pour supprimer un canal
+    if(!hubConnection) return
+      hubConnection.invoke('DeleteChannel',channel.id)
   }
 
   function leaveChannel() {

@@ -87,5 +87,7 @@ namespace signalr.backend.Controllers
         {
             return new string[] { "figue", "banane", "noix" };
         }
+
+        
     }
 }
