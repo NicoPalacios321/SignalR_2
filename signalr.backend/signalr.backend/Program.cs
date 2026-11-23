@@ -104,8 +104,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// TODO Ajouter SignalR
 builder.Services.AddSignalR();
+
+builder.Services.AddSingleton<MonBackgroundService>();
+builder.Services.AddHostedService<MonBackgroundService>(p => p.GetService<MonBackgroundService>());
 
 var app = builder.Build();
 
@@ -135,4 +137,15 @@ app.MapControllers();
 app.MapHub<ChatHub>("/chat");
 
 app.Run();
+
+public class MonBackgroundService : BackgroundService
+{
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+        }
+    }
+}
 
