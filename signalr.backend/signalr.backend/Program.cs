@@ -6,6 +6,8 @@ using Microsoft.OpenApi.Models;
 using signalr.backend.Data;
 using signalr.backend.Hubs;
 using System.Text;
+using Microsoft.Extensions.Hosting;
+using signalr.backend.BackgroundService;
 
 var builder = WebApplication.CreateBuilder(args);
 
