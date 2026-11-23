@@ -108,7 +108,7 @@ namespace signalr.backend.Hubs
 
         }
 
-        public async Task SendMessage(string message, int channelId, string userId)
+        public async Task SendMessage(string message, int channelId, string userId, Channel channel)
         {
             if (userId != null)
             {
@@ -125,9 +125,12 @@ namespace signalr.backend.Hubs
             {
                 await Clients.All.SendAsync("NewMessage", "[Tous] " + message);
             }
+            channel.NbMessages++;
+            await _context.SaveChangesAsync();
+            
         }
 
-        private static string CreateChannelGroupName(int channelId)
+        public static string CreateChannelGroupName(int channelId)
         {
             return "Channel" + channelId;
         }

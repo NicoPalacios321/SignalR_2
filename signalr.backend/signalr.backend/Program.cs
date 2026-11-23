@@ -6,6 +6,8 @@ using Microsoft.OpenApi.Models;
 using signalr.backend.Data;
 using signalr.backend.Hubs;
 using System.Text;
+using Microsoft.Extensions.Hosting;
+using signalr.backend.BackgroundService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -104,8 +106,10 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// TODO Ajouter SignalR
 builder.Services.AddSignalR();
+
+builder.Services.AddSingleton<MonBackgroundService>();
+builder.Services.AddHostedService<MonBackgroundService>(p => p.GetService<MonBackgroundService>());
 
 var app = builder.Build();
 
@@ -135,4 +139,15 @@ app.MapControllers();
 app.MapHub<ChatHub>("/chat");
 
 app.Run();
+
+public class MonBackgroundService : BackgroundService
+{
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+        }
+    }
+}
 
