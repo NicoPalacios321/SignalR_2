@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using signalr.backend.Data;
 using signalr.backend.Hubs;
 using System.Text;
+using signalr.backend.BackGroundService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -137,15 +138,4 @@ app.MapControllers();
 app.MapHub<ChatHub>("/chat");
 
 app.Run();
-
-public class MonBackgroundService : BackgroundService
-{
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
-        }
-    }
-}
 

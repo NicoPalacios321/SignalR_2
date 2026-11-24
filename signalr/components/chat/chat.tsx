@@ -40,6 +40,10 @@ export default function ChatComponent({ hubConnection }: ChatComponentProps) {
       console.log(channelsList)
     })
 
+    hubConnection.on('MostPopularChannel',(messageCount) => {
+      alert(`Vous êtes dans le canal le plus populaire avec ${messageCount} messages`)
+    })
+
     // TODO: Écouter le message pour quitter un channel (lorsque le channel est effacé)
     hubConnection.on('LeaveChannel',() => {
       setSelectedChannel(null)
@@ -52,6 +56,7 @@ export default function ChatComponent({ hubConnection }: ChatComponentProps) {
       hubConnection.off('NewMessage');
       hubConnection.off('LeaveChannel');
       hubConnection.off('ChannelList');
+      hubConnection.off('MostPopularChannel');
     };
   }, [hubConnection] );
 
@@ -87,6 +92,7 @@ export default function ChatComponent({ hubConnection }: ChatComponentProps) {
       hubConnection.invoke('CreateChannel',newChannelName)
       setNewChannelName('')
   }
+
 
   function deleteChannel(channel: Channel) {
     // TODO: Ajouter un invoke pour supprimer un canal
